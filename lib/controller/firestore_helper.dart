@@ -10,11 +10,22 @@ class FirestoreHelper{
   final cloudUsers = FirebaseFirestore.instance.collection("UTILISATEURS");
 
   // fonction pour créer un utilisateur
-  register(String email, String password) async{
+  register(String email, String password, String nom, String prenom) async{
     UserCredential resultat = await auth.createUserWithEmailAndPassword(email: email, password: password);
-    String uid = resultat.user?.uid ?? "";
 
-    
+    String uid = resultat.user?.uid ?? "";
+    Map<String, dynamic> map = {
+      "email": email,
+      "nom": nom,
+      "prenom": prenom,
+    };
+
+    addUser(uid, map);
+
+  }
+
+  addUser(String uid, Map<String, dynamic> data) async{
+    await cloudUsers.doc(uid).set(data);
   }
 
   // fonction pour se connecter

@@ -23,6 +23,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // récupérer les champs que l'on tape dans le controller
   TextEditingController password = TextEditingController();
   TextEditingController email = TextEditingController();
+  TextEditingController nom = TextEditingController();
+  TextEditingController prenom = TextEditingController();
 
 
   @override
@@ -52,30 +54,67 @@ class _MyHomePageState extends State<MyHomePage> {
                             fit: BoxFit.fill))),
                 SizedBox(height: 20),
                 Text("Adresse Mail"),
-                SizedBox(
-                  width: 350,
-                  height: 50,
-                  child: TextField(
-                    controller: email,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(vertical: 20),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 350,
+                    height: 50,
+                    child: TextField(
+                      controller: email,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person),
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+                      ),
+                    ),
+                  ),
+                ),
+                Text("Nom"),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 350,
+                    height: 50,
+                    child: TextField(
+                      controller: nom,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+                      ),
+                    ),
+                  ),
+                ),
+                Text("Prénom"),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 350,
+                    height: 50,
+                    child: TextField(
+                      controller: prenom,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
                 Text("Mot de passe"),
-                SizedBox(
-                  width: 350,
-                  height: 50,
-                  child: TextField(
-                    controller: password,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock),
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(vertical: 20),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 350,
+                    height: 50,
+                    child: TextField(
+                      controller: password,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+                      ),
                     ),
                   ),
                 ),
@@ -94,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    FirestoreHelper().register(email.text, password.text);
+                    FirestoreHelper().register(email.text, password.text, nom.text, prenom.text);
                   },
                   child: const Text("inscription"),
                 )
