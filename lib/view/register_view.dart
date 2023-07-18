@@ -2,8 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:io';
+
 import 'package:cours_flutter/controller/animation_controller.dart';
 import 'package:cours_flutter/controller/firestore_helper.dart';
+import 'package:cours_flutter/global.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -26,12 +30,49 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController nom = TextEditingController();
   TextEditingController prenom = TextEditingController();
 
+  // fonction qui fait un popup d'erreur en fonction de la plateforme
+  MyPopupError(dynamic erreur){
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context){
+        if(Platform.isIOS){
+          return CupertinoAlertDialog(
+            title: const Text("Erreur de connexion"),
+            content: Text("Votre email ou votre mot de passe est incorrect: $erreur"),
+            actions: [
+              TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: const Text("OK"),
+              )
+            ],
+          );
+        } else {
+          return AlertDialog(
+            title: const Text("Erreur de connexion"),
+            content: Text("Votre email ou votre mot de passe est incorrect: $erreur"),
+            actions: [
+              TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: const Text("OK"),
+              )
+            ],
+          );
+        }
+      }
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text("Connexion / Inscription"),
+            title: const Text("Connexion / Inscription"),
             backgroundColor: Colors.purple,
             centerTitle: true),
         body: SingleChildScrollView(
@@ -42,18 +83,19 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(height: 10),
                 Container(
                     alignment: Alignment.center,
                     height: MediaQuery.of(context).size.height * 0.3,
                     width: MediaQuery.of(context).size.width * 0.8,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        image: DecorationImage(
+                        image: const DecorationImage(
                             image: NetworkImage(
                                 "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/FoS20162016_0625_104350AA_%2827867787696%29.jpg/800px-FoS20162016_0625_104350AA_%2827867787696%29.jpg"),
                             fit: BoxFit.fill))),
-                SizedBox(height: 20),
-                Text("Adresse Mail"),
+                const SizedBox(height: 20),
+                const Text("Adresse Mail"),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
@@ -61,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 50,
                     child: TextField(
                       controller: email,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.person),
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(vertical: 20),
@@ -69,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                Text("Nom"),
+                const Text("Nom"),
 
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -78,14 +120,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 50,
                     child: TextField(
                       controller: nom,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(vertical: 20),
                       ),
                     ),
                   ),
                 ),
-                Text("Prénom"),
+                const Text("Prénom"),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
@@ -93,15 +135,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 50,
                     child: TextField(
                       controller: prenom,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(vertical: 20),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Text("Mot de passe"),
+                const SizedBox(height: 10),
+                const Text("Mot de passe"),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
@@ -110,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: TextField(
                       controller: password,
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.lock),
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(vertical: 20),
@@ -118,22 +160,50 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple, shape: StadiumBorder()),
+                      backgroundColor: Colors.purple, shape: const StadiumBorder()),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return MySecondPage(
-                          password: password.text, email: email.text);
-                    }));
+                    FirestoreHelper()
+                        .connect(email.text, password.text)
+                        .then((value) => {
+                              setState(() {
+                                me = value;
+                              }),
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return MySecondPage(
+                                    password: password.text, email: email.text);
+                              }))
+                            })
+                        .catchError((error) => {
+                              MyPopupError(error)
+                            });
                   },
                   child: const Text('Connexion'),
                 ),
                 TextButton(
                   onPressed: () {
-                    FirestoreHelper().register(email.text, password.text, nom.text, prenom.text);
+                    FirestoreHelper().register(email.text, password.text, nom.text, prenom.text)
+                        .then((value) => {
+                      setState(() {
+                        me = value;
+                      }),
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                            return MySecondPage(
+                                password: password.text, email: email.text);
+                          }))
+                    })
+                        .catchError((error) => {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Center(child: Text("Une erreur est survenue")),
+                            duration: Duration(seconds: 2),
+                            backgroundColor: Colors.red,
+                          ))
+                    });
                   },
                   child: const Text("inscription"),
                 )
@@ -161,7 +231,7 @@ class _MySecondPageState extends State<MySecondPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text("Connexion / Inscription"),
+            title: const Text("Connexion / Inscription"),
             backgroundColor: Colors.purple,
             centerTitle: true),
         body: Text(
