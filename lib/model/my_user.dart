@@ -11,6 +11,7 @@ class MyUser {
   DateTime? birthday;
   String? avatar;
   Gender genre = Gender.indefini;
+  List? favoris;
 
   String get fullName {
     return "$prenom $nom";
@@ -38,6 +39,7 @@ class MyUser {
     nom = map["nom"];
     prenom = map["prenom"];
     String? provisoirePseudo = map["pseudo"];
+    favoris = map["favoris"] ?? [];
 
     if(provisoirePseudo == null){
       pseudo = "";

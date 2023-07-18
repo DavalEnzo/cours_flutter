@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../controller/all_users.dart';
+import '../controller/mes_favoris.dart';
 import 'my_drawer.dart';
 
 class MyDashBoardView extends StatefulWidget {
@@ -54,7 +56,15 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
 
   Widget bodyPage()
   {
-    return Text("ma page");
+    switch(currentIndex)
+    {
+      case 0:
+        return const AllUsers();
+      case 1:
+        return const MyFavorites();
+      default:
+        return Text("Problème d'affichage");
+    }
   }
 
 }

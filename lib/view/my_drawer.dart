@@ -77,9 +77,15 @@ class _MyDrawerState extends State<MyDrawer> {
                   // on met à jour l'utilisateur dans Firebase Firestore
                   FirestoreHelper().updateUser(me.id, map);
 
-                });
                   Navigator.pop(context);
-              }, child: const Text("Confirmation", style: TextStyle(color: Colors.blueAccent))),
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Image enregistrée"))));
+                }).catchError((onError){
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Erreur d'enregistrement"))));
+                });
+                }, child: const Text("Confirmation", style: TextStyle(color: Colors.blueAccent))),
             ],
           );
         });
@@ -139,7 +145,12 @@ class _MyDrawerState extends State<MyDrawer> {
                           setState(() {
                             me.pseudo = pseudo.text;
                           });
-                          FirestoreHelper().updateUser(me.id, map);
+                          FirestoreHelper().updateUser(me.id, map).then((value) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Pseudo mis à jour"))));
+                          }).catchError((onError){
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Erreur de mise à jour"))));
+                          });
+                          Navigator.pop(context);
                         }
                       }
                       setState(() {
