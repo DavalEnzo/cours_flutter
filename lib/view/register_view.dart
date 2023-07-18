@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:cours_flutter/controller/animation_controller.dart';
 import 'package:cours_flutter/controller/firestore_helper.dart';
 import 'package:cours_flutter/global.dart';
+import 'package:cours_flutter/view/dashboard_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -173,8 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               }),
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                return MySecondPage(
-                                    password: password.text, email: email.text);
+                                return const MyDashBoardView();
                               }))
                             })
                         .catchError((error) => {
@@ -192,8 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       }),
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                            return MySecondPage(
-                                password: password.text, email: email.text);
+                            return const MyDashBoardView();
                           }))
                     })
                         .catchError((error) => {
@@ -212,34 +211,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class MySecondPage extends StatefulWidget {
-  String password;
-  String email;
-
-  MySecondPage({
-    required this.password,
-    required this.email,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<MySecondPage> createState() => _MySecondPageState();
-}
-
-class _MySecondPageState extends State<MySecondPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-            title: const Text("Connexion / Inscription"),
-            backgroundColor: Colors.purple,
-            centerTitle: true),
-        body: Text(
-            "Mon email: ${widget.email} et mon password: ${widget.password}"
-        )
-    );
-  }
-}
 /*Image.network("https://cdn.motor1.com/images/mgl/x2Qmp/s1/4x3/mercedes-amg-gt-r.webp")*/
 
 /*ElevatedButton(

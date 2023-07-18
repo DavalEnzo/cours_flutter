@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:cours_flutter/controller/my_permission.dart';
 import 'package:cours_flutter/view/register_view.dart';
 import 'package:flutter/material.dart';
 // ne pas oublier d'importer le package firebase_core pour initialiser le lien avec Firebase,
@@ -19,6 +20,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
 
   );
+  MyPermissionPhoto().init();
   runApp(const MyApp());
 }
 

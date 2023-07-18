@@ -1,5 +1,7 @@
 // classe qui va nous aider à la gestion de la base de données
 
+import 'dart:typed_data';
+
 import 'package:cours_flutter/model/my_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -35,6 +37,15 @@ class FirestoreHelper{
 
   addUser(String uid, Map<String, dynamic> data) async{
     await cloudUsers.doc(uid).set(data);
+  }
+
+  updateUser(String uid, Map<String, dynamic> data) async{
+    await cloudUsers.doc(uid).update(data);
+  }
+
+  Future<String>stockageData(String ref, String uid, String nameData, Uint8List bytesData) async{
+    TaskSnapshot snapshot = await  storage.ref(ref).child(uid).putData(bytesData);
+    return snapshot.ref.getDownloadURL();
   }
 
   // fonction pour se connecter
