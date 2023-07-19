@@ -19,9 +19,9 @@ class _AllUsersState extends State<AllUsers> {
         stream: FirestoreHelper().cloudUsers.snapshots(),
         builder: (context, snap) {
           List documents = snap.data?.docs ?? [];
-          if (documents == []) {
+          if (documents.length == 1) {
             return const Center(
-              child: Text("Aucun utilisateur"),
+              child: Text("Vous êtes le seul utilisateur", style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold)),
             );
           } else {
             return ListView.builder(

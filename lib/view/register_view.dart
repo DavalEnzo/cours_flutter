@@ -2,13 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:io';
-
 import 'package:cours_flutter/controller/animation_controller.dart';
 import 'package:cours_flutter/controller/firestore_helper.dart';
 import 'package:cours_flutter/global.dart';
 import 'package:cours_flutter/view/dashboard_view.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cours_flutter/view/my_background.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -24,190 +22,168 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   // récupérer les champs que l'on tape dans le controller
   TextEditingController password = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController nom = TextEditingController();
   TextEditingController prenom = TextEditingController();
 
-  // fonction qui fait un popup d'erreur en fonction de la plateforme
-  MyPopupError(dynamic erreur){
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context){
-        if(Platform.isIOS){
-          return CupertinoAlertDialog(
-            title: const Text("Erreur de connexion"),
-            content: Text("Votre email ou votre mot de passe est incorrect: $erreur"),
-            actions: [
-              TextButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                },
-                child: const Text("OK"),
-              )
-            ],
-          );
-        } else {
-          return AlertDialog(
-            title: const Text("Erreur de connexion"),
-            content: Text("Votre email ou votre mot de passe est incorrect: $erreur"),
-            actions: [
-              TextButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                },
-                child: const Text("OK"),
-              )
-            ],
-          );
-        }
-      }
-    );
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: const Text("Connexion / Inscription"),
-            backgroundColor: Colors.purple,
-            centerTitle: true),
-        body: SingleChildScrollView(
-            child: Center(
-                child: MyAnimationController(
-          delay: 2,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10),
-                Container(
-                    alignment: Alignment.center,
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        image: const DecorationImage(
-                            image: NetworkImage(
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/FoS20162016_0625_104350AA_%2827867787696%29.jpg/800px-FoS20162016_0625_104350AA_%2827867787696%29.jpg"),
-                            fit: BoxFit.fill))),
-                const SizedBox(height: 20),
-                const Text("Adresse Mail"),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 350,
-                    height: 50,
-                    child: TextField(
-                      controller: email,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.person),
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+            // title: const Text("Connexion / Inscription"),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            // centerTitle: true)
+        ),
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          children: [
+            const MyBackground(),
+            SafeArea(
+              child: SingleChildScrollView(
+                  child: Center(
+                      child: MyAnimationController(
+                delay: 2,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 10),
+                      Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              image: const DecorationImage(
+                                  image: NetworkImage(
+                                      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/FoS20162016_0625_104350AA_%2827867787696%29.jpg/800px-FoS20162016_0625_104350AA_%2827867787696%29.jpg"),
+                                  fit: BoxFit.fill))),
+                      const SizedBox(height: 20),
+                      const Text("Adresse Mail"),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 350,
+                          height: 50,
+                          child: TextField(
+                            controller: email,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.person),
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(vertical: 20),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                const Text("Nom"),
-
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 350,
-                    height: 50,
-                    child: TextField(
-                      controller: nom,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+                      const Text("Nom"),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 350,
+                          height: 50,
+                          child: TextField(
+                            controller: nom,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(vertical: 20),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                const Text("Prénom"),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 350,
-                    height: 50,
-                    child: TextField(
-                      controller: prenom,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+                      const Text("Prénom"),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 350,
+                          height: 50,
+                          child: TextField(
+                            controller: prenom,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(vertical: 20),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text("Mot de passe"),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 350,
-                    height: 50,
-                    child: TextField(
-                      controller: password,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+                      const SizedBox(height: 10),
+                      const Text("Mot de passe"),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 350,
+                          height: 50,
+                          child: TextField(
+                            controller: password,
+                            obscureText: true,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.lock),
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(vertical: 20),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple, shape: const StadiumBorder()),
-                  onPressed: () {
-                    FirestoreHelper()
-                        .connect(email.text, password.text)
-                        .then((value) => {
-                              setState(() {
-                                me = value;
-                              }),
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return const MyDashBoardView();
-                              }))
-                            })
-                        .catchError((error) => {
-                              MyPopupError(error)
-                            });
-                  },
-                  child: const Text('Connexion'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    FirestoreHelper().register(email.text, password.text, nom.text, prenom.text)
-                        .then((value) => {
-                      setState(() {
-                        me = value;
-                      }),
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                            return const MyDashBoardView();
-                          }))
-                    })
-                        .catchError((error) => {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Center(child: Text("Une erreur est survenue")),
-                            duration: Duration(seconds: 2),
-                            backgroundColor: Colors.red,
-                          ))
-                    });
-                  },
-                  child: const Text("inscription"),
-                )
-              ]),
-        ))));
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple,
+                            shape: const StadiumBorder()),
+                        onPressed: () {
+                          FirestoreHelper()
+                              .connect(email.text, password.text)
+                              .then((value) => {
+                                    setState(() {
+                                      me = value;
+                                    }),
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return const MyDashBoardView();
+                                    }))
+                                  })
+                              .catchError((error) => {
+                                    MyPopupError(
+                                        error,
+                                        "Erreur de connexion",
+                                        "Votre email ou votre mot de passe est incorrect",
+                                        context)
+                                  });
+                        },
+                        child: const Text('Connexion'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          FirestoreHelper()
+                              .register(
+                                  email.text, password.text, nom.text, prenom.text)
+                              .then((value) => {
+                                    setState(() {
+                                      me = value;
+                                    }),
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return const MyDashBoardView();
+                                    }))
+                                  })
+                              .catchError((error) => {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Center(
+                                          child: Text("Une erreur est survenue")),
+                                      duration: Duration(seconds: 2),
+                                      backgroundColor: Colors.red,
+                                    ))
+                                  });
+                        },
+                        child: const Text("inscription"),
+                      )
+                    ]),
+              ))),
+            ),
+          ],
+        ));
   }
 }
 

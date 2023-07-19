@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../controller/all_users.dart';
 import '../controller/mes_favoris.dart';
+import '../global.dart';
 import 'my_drawer.dart';
 
 class MyDashBoardView extends StatefulWidget {
@@ -14,6 +15,7 @@ class MyDashBoardView extends StatefulWidget {
 class _MyDashBoardViewState extends State<MyDashBoardView> {
   // variable
   int currentIndex = 0;
+  String title = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +30,7 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        title: Text(title),
       ),
       backgroundColor: Colors.purple,
       body: bodyPage(),
@@ -36,6 +39,17 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
         onTap: (index) {
           setState(() {
             currentIndex = index;
+
+            switch (currentIndex) {
+              case 0:
+                title = "Utilisateurs";
+                break;
+              case 1:
+                title = "Mes amis";
+                break;
+              default:
+                title = "Problème d'affichage";
+            }
           });
         },
         elevation: 1,
