@@ -34,6 +34,32 @@ class _MyLoadingState extends State<MyLoading> {
     super.initState();
   }
 
+  Widget dots(int index) {
+    if (MediaQuery.of(context).viewInsets.bottom > 0) {
+      return Container();
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SmoothPageIndicator(
+          controller: pageController,
+          onDotClicked: (index) => pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          ),
+          count: 4,
+          effect: const ExpandingDotsEffect(
+            dotColor: Colors.black,
+            activeDotColor: Colors.deepOrange,
+            dotHeight: 10,
+            dotWidth: 10,
+            expansionFactor: 2,
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,25 +89,7 @@ class _MyLoadingState extends State<MyLoading> {
                   const MyHomePage(title: "Connexion / Inscription"),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SmoothPageIndicator(
-                  controller: pageController,
-                  onDotClicked: (index) => pageController.animateToPage(
-                    index,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                  ),
-                  count: 4,
-                  effect: const ExpandingDotsEffect(
-                    dotColor: Colors.black,
-                    activeDotColor: Colors.deepOrange,
-                    dotHeight: 10,
-                    dotWidth: 10,
-                    expansionFactor: 2,
-                  ),
-                ),
-              )
+              dots(currentIndex),
             ],
           ),
         ),
