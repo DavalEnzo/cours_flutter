@@ -4,6 +4,7 @@ import '../controller/all_users.dart';
 import '../controller/mes_favoris.dart';
 import '../global.dart';
 import 'my_drawer.dart';
+import 'my_map_view.dart';
 
 class MyDashBoardView extends StatefulWidget {
   const MyDashBoardView({Key? key}) : super(key: key);
@@ -47,6 +48,9 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
               case 1:
                 title = "Mes amis";
                 break;
+              case 2:
+                title = "Carte";
+                break;
               default:
                 title = "Problème d'affichage";
             }
@@ -63,6 +67,10 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
               icon: Icon(Icons.favorite),
               label: "Mes amis"
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.map),
+              label: "Carte"
+          ),
         ],
       )
     );
@@ -76,6 +84,8 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
         return const AllUsers();
       case 1:
         return const MyFavorites();
+      case 2:
+        return const MyMapView();
       default:
         return Text("Problème d'affichage");
     }
