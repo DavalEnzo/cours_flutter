@@ -25,6 +25,7 @@ class UserDetails extends StatefulWidget {
 class _UserDetails extends State<UserDetails> {
   MyUser userDetail = MyUser.empty();
   List<MyUser> friendList = [];
+  bool loading = true;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _UserDetails extends State<UserDetails> {
             });
           });
         }
+        loading = false;
       });
     });
   }
@@ -68,9 +70,12 @@ class _UserDetails extends State<UserDetails> {
               const SizedBox(height: 20),
               const Text("Amis", style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Colors.white)),
               const SizedBox(height: 20),
+              loading ? const CircularProgressIndicator(color: Colors.white, backgroundColor: Colors.deepOrange, strokeWidth: 7,) :
               ListView(
                 shrinkWrap: true,
                 children: [
+                  if(friendList.isEmpty)
+                    const Center(child: Text("Cet ami n'a pas encore d'amis", style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold))),
                   for (MyUser friend in friendList)
                     InkWell(
                       onTap: () {
