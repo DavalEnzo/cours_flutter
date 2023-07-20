@@ -30,10 +30,19 @@ class _CarteGoogleState extends State<CarteGoogle> {
     return GoogleMap(
         initialCameraPosition: camera,
         myLocationButtonEnabled: true,
+        markers: {
+          Marker(
+            markerId: const MarkerId("myPosition"),
+            position: LatLng(widget.location.latitude, widget.location.longitude),
+            infoWindow: const InfoWindow(title: "Ma position"),
+          )
+        },
         buildingsEnabled: true,
         myLocationEnabled: true,
-        onMapCreated: (GoogleMapController controller) {
-          completer.complete(controller);
+        onMapCreated: (control) async {
+          String newStyle = await DefaultAssetBundle.of(context).loadString('lib/map_style.json');
+          control.setMapStyle(newStyle);
+          completer.complete(control);
         });
   }
 }
