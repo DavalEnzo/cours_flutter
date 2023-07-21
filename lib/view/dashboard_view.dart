@@ -18,11 +18,12 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
   // variable
   int currentIndex = 0;
   String title = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar totalement transparente
-      // drawer = hamburger menu
+        // appBar totalement transparente
+        // drawer = hamburger menu
         drawer: Container(
           width: MediaQuery.of(context).size.width * 0.72,
           height: MediaQuery.of(context).size.height,
@@ -34,7 +35,7 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
           elevation: 0,
           title: Text(title),
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.blueAccent,
         body: bodyPage(),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentIndex,
@@ -50,10 +51,10 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
                   title = "Mes amis";
                   break;
                 case 2:
-                  title = "Carte";
+                  title = "Messagerie"; // Ajoutez ce nouveau cas
                   break;
                 case 3:
-                  title = "Messagerie"; // Ajoutez ce nouveau cas
+                  title = "Carte";
                   break;
                 default:
                   title = "Problème d'affichage";
@@ -65,42 +66,33 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
           items: const [
             BottomNavigationBarItem(
                 icon: Icon(Icons.person, color: Colors.grey),
-                label: "Utilisateurs"
-            ),
+                label: "Utilisateurs"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.favorite, color: Colors.grey),
-                label: "Mes amis"
-            ),
+                label: "Mes amis"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.map, color: Colors.grey),
-                label: "Carte"
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.message, color: Colors.grey), // Icône pour l'élément de messagerie
+                icon: Icon(Icons.message, color: Colors.grey),
+                // Icône pour l'élément de messagerie
                 label: "Messagerie" // Étiquette pour l'élément de messagerie
-            ),
+                ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.map, color: Colors.grey), label: "Carte"),
           ],
-
-
-        )
-    );
+        ));
   }
 
-  Widget bodyPage()
-  {
-    switch(currentIndex)
-    {
+  Widget bodyPage() {
+    switch (currentIndex) {
       case 0:
         return const AllUsers();
       case 1:
         return const MyFavorites();
       case 2:
-        return const MyMapView();
+        return const MessageMap();
       case 3:
-        return const MessageMap(); // Ajoutez ce nouveau cas
+        return const MyMapView(); // Ajoutez ce nouveau cas
       default:
         return Text("Problème d'affichage");
     }
   }
-
 }

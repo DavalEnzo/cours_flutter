@@ -4,8 +4,10 @@ class MyMessage {
   final String id;
   final String sender;
   final String receiver;
+  final String message;
+  final DateTime timestamp; // Maintenant, c'est une DateTime
 
-  MyMessage({required this.id, required this.sender, required this.receiver});
+  MyMessage({required this.id, required this.sender, required this.receiver, required this.message, required this.timestamp});
 
   // Méthode pour convertir un DocumentSnapshot en une instance de MyMessage
   factory MyMessage.fromDocument(DocumentSnapshot doc) {
@@ -13,6 +15,8 @@ class MyMessage {
       id: doc.id,
       sender: doc['sender'],
       receiver: doc['receiver'],
+      message: doc['message'],
+      timestamp: doc['timestamp'].toDate(), // Convertir le Timestamp en DateTime
     );
   }
 
@@ -21,6 +25,8 @@ class MyMessage {
     return {
       'sender': sender,
       'receiver': receiver,
+      'message': message,
+      'timestamp': timestamp, // Maintenant, c'est une DateTime
     };
   }
 }
