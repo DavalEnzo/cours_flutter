@@ -117,15 +117,15 @@ class _MyDrawerState extends State<MyDrawer> {
                   color: Colors.black,
                 ),
                 ListTile(
-                  leading: const Icon(Icons.mail, color: Colors.purple),
+                  leading: const Icon(Icons.mail, color: Colors.blueAccent),
                   title: Text(me.email, style: const TextStyle(fontSize: 20)),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.person, color: Colors.purple),
+                  leading: const Icon(Icons.person, color: Colors.blueAccent),
                   title: Text(capitalize(me.fullName), style: const TextStyle(fontSize: 20)),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.person, color: Colors.purple),
+                  leading: const Icon(Icons.person, color: Colors.blueAccent),
                   title: (isScript)?TextField(
                     controller: pseudo,
                     decoration: const InputDecoration(

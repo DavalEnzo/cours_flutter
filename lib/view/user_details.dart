@@ -51,7 +51,7 @@ class _UserDetails extends State<UserDetails> {
           backgroundColor: Colors.deepOrange,
           centerTitle: true,
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.blueAccent,
         body: Center(
           child: Column(
             children: [
