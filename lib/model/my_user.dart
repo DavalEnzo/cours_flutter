@@ -28,29 +28,28 @@ class MyUser {
 
   // constructeur bdd
   // on récupère le snapshot (document + champs) de l'utilisateur
-  MyUser(DocumentSnapshot snapshot){
+  // ...rest of your MyUser code...
+
+// constructeur bdd
+// on récupère le snapshot (document + champs) de l'utilisateur
+  MyUser(DocumentSnapshot snapshot) {
     // on récupère l'id du document
     id = snapshot.id;
     // on récupère les champs du document
     Map<String, dynamic> map = snapshot.data() as Map<String, dynamic>;
 
     // on récupère les champs et on les affecte aux variables
-    email = map["email"];
-    nom = map["nom"];
-    prenom = map["prenom"];
-    String? provisoirePseudo = map["pseudo"];
-    favoris = map["favoris"] ?? [];
-    coordonnees = map["coordonnees"] as Map<String, dynamic>?;
-
-
-    if(provisoirePseudo == null){
-      pseudo = "";
-    } else {
-      pseudo = provisoirePseudo;
-    }
-
-    birthday = map["birthday"] ?? DateTime.now();
-    avatar = map["avatar"] ?? defaultImage;
+    email = map.containsKey('email') ? map['email'] : "";
+    nom = map.containsKey('nom') ? map['nom'] : "";
+    prenom = map.containsKey('prenom') ? map['prenom'] : "";
+    pseudo = map.containsKey('pseudo') ? map['pseudo'] : "";
+    favoris = map.containsKey('favoris') ? map['favoris'] : [];
+    coordonnees = map.containsKey('coordonnees') ? map['coordonnees'] as Map<String, dynamic> : null;
+    birthday = map.containsKey('birthday') ? map['birthday'].toDate() : DateTime.now();
+    avatar = map.containsKey('avatar') ? map['avatar'] : defaultImage;
   }
+
+// ...rest of your MyUser code...
+
 
 }
