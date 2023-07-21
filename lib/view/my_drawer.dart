@@ -1,9 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:cours_flutter/controller/firestore_helper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:cours_flutter/global.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -41,9 +42,9 @@ class _MyDrawerState extends State<MyDrawer> {
   accesPhoto() async {
     FilePickerResult? resultat = await FilePicker.platform.pickFiles(
       type: FileType.image,
-        withData: true,
+      withData: true,
     );
-    if(resultat != null){
+    if (resultat != null) {
       nameImage = resultat.files.first.name;
       bytesImages = resultat.files.first.bytes;
       popupImage();
@@ -52,19 +53,21 @@ class _MyDrawerState extends State<MyDrawer> {
 
   popupImage() {
     showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: const Text("Souhaitez-vous enregistrer cette image ?"),
-            content: Image.memory(bytesImages!),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text("Annulation", style: TextStyle(color: Colors.red))),
-              TextButton(onPressed: () {
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text("Souhaitez-vous enregistrer cette image ?"),
+          content: Image.memory(bytesImages!),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Annulation", style: TextStyle(color: Colors.red)),
+            ),
+            TextButton(
+              onPressed: () {
                 // on enregistre l'image dans Firebase Storage
                 FirestoreHelper().stockageData("images", me.id, nameImage!, bytesImages!).then((value) {
                   // on récupère l'url de l'image
@@ -80,15 +83,18 @@ class _MyDrawerState extends State<MyDrawer> {
                   Navigator.pop(context);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Image enregistrée"))));
-                }).catchError((onError){
+                }).catchError((onError) {
                   Navigator.pop(context);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Erreur d'enregistrement"))));
                 });
-                }, child: const Text("Confirmation", style: TextStyle(color: Colors.blueAccent))),
-            ],
-          );
-        });
+              },
+              child: const Text("Confirmation", style: TextStyle(color: Colors.blueAccent)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -96,72 +102,74 @@ class _MyDrawerState extends State<MyDrawer> {
     // SafeArea sert à ne pas coder dans la zone où il y a les notifs ou les boutons de navigation du téléphone
     return SafeArea(
       bottom: false,
-        child: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                InkWell(
-                  onTap: () {
-                    accesPhoto();
-                  },
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundImage: NetworkImage(me.avatar ?? defaultImage),
-                  ),
+      child: Center(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            InkWell(
+              onTap: () {
+                accesPhoto();
+              },
+              child: CircleAvatar(
+                radius: 60,
+                backgroundImage: NetworkImage(me.avatar ?? defaultImage),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Divider(
+              thickness: 2,
+              indent: 20,
+              endIndent: 20,
+              color: Colors.black,
+            ),
+            ListTile(
+              leading: const Icon(Icons.mail, color: Colors.blueAccent),
+              title: Text(me.email, style: const TextStyle(fontSize: 20, color: Colors.white)),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person, color: Colors.blueAccent),
+              title: Text(capitalize(me.fullName), style: const TextStyle(fontSize: 20, color: Colors.white)),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person, color: Colors.blueAccent),
+              title: (isScript)
+                  ? TextField(
+                controller: pseudo,
+                decoration: const InputDecoration(
+                  labelText: "Entrez votre pseudo",
                 ),
-                const SizedBox(height: 20),
-                const Divider(
-                  thickness: 2,
-                  indent: 20,
-                  endIndent: 20,
-                  color: Colors.black,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.mail, color: Colors.blueAccent),
-                  title: Text(me.email, style: const TextStyle(fontSize: 20)),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person, color: Colors.blueAccent),
-                  title: Text(capitalize(me.fullName), style: const TextStyle(fontSize: 20)),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person, color: Colors.blueAccent),
-                  title: (isScript)?TextField(
-                    controller: pseudo,
-                    decoration: const InputDecoration(
-                      labelText: "Entrez votre pseudo",
-                    ),
-                  ):Text(me.pseudo ?? "", style: const TextStyle(fontSize: 20)),
-                  trailing: IconButton(
-                    icon: Icon((isScript)?Icons.check:Icons.update),
-                    onPressed: () {
-                      if(isScript){
-                        // On vérifie que le champ n'est pas vide
-                        if(pseudo.text != "" && pseudo.text != me.pseudo){
-                          // On met à jour le pseudo
-                          Map<String, dynamic> map = {
-                            "pseudo": pseudo.text,
-                          };
-                          setState(() {
-                            me.pseudo = pseudo.text;
-                          });
-                          FirestoreHelper().updateUser(me.id, map).then((value) {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Pseudo mis à jour"))));
-                          }).catchError((onError){
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Erreur de mise à jour"))));
-                          });
-                          Navigator.pop(context);
-                        }
-                      }
+              )
+                  : Text(me.pseudo ?? "", style: const TextStyle(fontSize: 20, color: Colors.white)),
+              trailing: IconButton(
+                icon: Icon((isScript) ? Icons.check : Icons.update),
+                onPressed: () {
+                  if (isScript) {
+                    // On vérifie que le champ n'est pas vide
+                    if (pseudo.text != "" && pseudo.text != me.pseudo) {
+                      // On met à jour le pseudo
+                      Map<String, dynamic> map = {
+                        "pseudo": pseudo.text,
+                      };
                       setState(() {
-                        isScript = !isScript;
+                        me.pseudo = pseudo.text;
                       });
-                    },
-                ),
-                ),
-              ],
-            )
-        )
+                      FirestoreHelper().updateUser(me.id, map).then((value) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Pseudo mis à jour"))));
+                      }).catchError((onError) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text("Erreur de mise à jour"))));
+                      });
+                      Navigator.pop(context);
+                    }
+                  }
+                  setState(() {
+                    isScript = !isScript;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
