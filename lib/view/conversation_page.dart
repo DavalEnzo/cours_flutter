@@ -15,12 +15,27 @@ class ConversationPage extends StatefulWidget {
 
 class _ConversationPageState extends State<ConversationPage> {
   final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat avec ${widget.user.fullName}'),
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(widget.user.avatar ?? ''),
+            ),
+            SizedBox(width: 8),
+            Text(widget.user.fullName),
+          ],
+        ),
         leading: BackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -44,8 +59,15 @@ class _ConversationPageState extends State<ConversationPage> {
                   return Text("Loading");
                 }
 
-                return ListView(
-                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                  _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                });
+
+                return ListView.builder(
+                  controller: _scrollController,
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot document = snapshot.data!.docs[index];
                     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
                     MyMessage message = MyMessage.fromDocument(document);
                     bool isSender = message.sender == FirebaseAuth.instance.currentUser!.uid;
@@ -62,13 +84,11 @@ class _ConversationPageState extends State<ConversationPage> {
                           crossAxisAlignment: isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(message.message, style: TextStyle(fontSize: 16, color: Colors.black)),
-                            SizedBox(height: 5),
-                            Text('From: ${message.sender}', style: TextStyle(fontSize: 13, color: Colors.grey)),
                           ],
                         ),
                       ),
                     );
-                  }).toList(),
+                  },
                 );
               },
             ),

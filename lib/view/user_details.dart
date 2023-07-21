@@ -5,6 +5,9 @@ import 'package:geocoding/geocoding.dart';
 import '../controller/firestore_helper.dart';
 import '../global.dart';
 
+
+
+
 class UserDetails extends StatefulWidget {
   final String userId;
 
@@ -14,10 +17,10 @@ class UserDetails extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<UserDetails> createState() => _UserDetails();
+  State<UserDetails> createState() => _UserDetailsState();
 }
 
-class _UserDetails extends State<UserDetails> {
+class _UserDetailsState extends State<UserDetails> {
   MyUser userDetail = MyUser.empty();
   List<MyUser> friendList = [];
   var adresse = "";
@@ -42,7 +45,7 @@ class _UserDetails extends State<UserDetails> {
   }
 
   Future<String?> getStreetFromCoordinates(double latitude, double longitude) async {
-    if(userDetail.coordonnees == null) return "";
+    if (userDetail.coordonnees == null) return "";
     List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
     Placemark rue = placemarks[0];
     setState(() {
@@ -62,15 +65,35 @@ class _UserDetails extends State<UserDetails> {
         centerTitle: true,
       ),
       backgroundColor: Colors.blueAccent,
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 20),
-            CircleAvatar(
-              radius: 100,
-              backgroundImage: NetworkImage(userDetail.avatar ?? defaultImage),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 100,
+                  backgroundImage: NetworkImage(userDetail.avatar ?? defaultImage),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.blueAccent,
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.edit, color: Colors.white),
+                      onPressed: () {
+                        // Add your edit profile picture logic here
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
             const SizedBox(height: 20),
             Text(userDetail.fullName,
                 style: const TextStyle(
@@ -93,46 +116,40 @@ class _UserDetails extends State<UserDetails> {
             const SizedBox(height: 20),
             loading
                 ? const CircularProgressIndicator(
-                    color: Colors.white,
-                    backgroundColor: Colors.deepOrange,
-                    strokeWidth: 7,
-                  )
-                : ListView(
-                    shrinkWrap: true,
-                    children: [
-                      if (friendList.isEmpty)
-                        const Center(
-                            child: Text("Cet ami n'a pas encore d'amis",
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold))),
-                      for (MyUser friend in friendList)
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        UserDetails(userId: friend.id)));
-                          },
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              radius: 30,
-                              backgroundImage:
-                                  NetworkImage(friend.avatar ?? defaultImage),
-                            ),
-                            title: Text(friend.fullName,
-                                style: const TextStyle(color: Colors.white)),
-                            subtitle: Text(friend.email,
-                                style: const TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                    ],
-                  )
+              color: Colors.white,
+              backgroundColor: Colors.deepOrange,
+              strokeWidth: 7,
+            )
+                : ListView.builder(
+              shrinkWrap: true,
+              itemCount: friendList.length,
+              itemBuilder: (context, index) {
+                MyUser friend = friendList[index];
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserDetails(userId: friend.id),
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(friend.avatar ?? defaultImage),
+                    ),
+                    title: Text(friend.fullName, style: const TextStyle(color: Colors.white)),
+                    subtitle: Text(friend.email, style: const TextStyle(color: Colors.white)),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+

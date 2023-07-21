@@ -27,7 +27,7 @@ class _MyDashBoardViewState extends State<MyDashBoardView> {
         drawer: Container(
           width: MediaQuery.of(context).size.width * 0.72,
           height: MediaQuery.of(context).size.height,
-          color: Colors.amber,
+          color: Colors.black87,
           child: const MyDrawer(),
         ),
         appBar: AppBar(
