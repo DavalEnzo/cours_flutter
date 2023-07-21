@@ -129,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       const SizedBox(height: 10),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.purple,
+                            backgroundColor: Colors.blueAccent,
                             shape: const StadiumBorder()),
                         onPressed: () {
                           FirestoreHelper()

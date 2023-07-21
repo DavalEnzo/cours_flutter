@@ -52,18 +52,16 @@ class _UserDetails extends State<UserDetails> {
 
   @override
   Widget build(BuildContext context) {
-    if(userDetail.coordonnees != null) getStreetFromCoordinates(userDetail.coordonnees?["latitude"], userDetail.coordonnees?["longitude"]);
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Détails de l'utilisateur"),
         bottom: PreferredSize(
             preferredSize: Size.zero,
             child: Text(adresse, style: const TextStyle(fontSize: 10, color: Colors.white))),
-        backgroundColor: Colors.deepOrange,
+        backgroundColor: Colors.purple,
         centerTitle: true,
       ),
-      backgroundColor: Colors.purple,
+      backgroundColor: Colors.blueAccent,
       body: Center(
         child: Column(
           children: [
