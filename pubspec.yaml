@@ -46,6 +46,7 @@ dependencies:
   font_awesome_flutter:
   lottie:
   geocoding: ^2.1.0
+  location: ^5.0.0
 
 dev_dependencies:
   flutter_test:
