@@ -20,10 +20,7 @@ class _MyMapViewState extends State<MyMapView> {
           return const Center(child: Text("Aucune donnée", style: TextStyle(color: Colors.white, fontSize: 35)));
         } else {
           Position location = snap.data!;
-          return Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: CarteGoogle(location: location),
-          );
+          return CarteGoogle(location: location);
         }
       },
     );

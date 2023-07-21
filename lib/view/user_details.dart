@@ -42,7 +42,7 @@ class _UserDetails extends State<UserDetails> {
   }
 
   Future<String?> getStreetFromCoordinates(double latitude, double longitude) async {
-    if(latitude == null || longitude == null) return "";
+    if(userDetail.coordonnees == null) return "";
     List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
     Placemark rue = placemarks[0];
     setState(() {
