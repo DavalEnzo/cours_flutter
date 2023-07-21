@@ -60,7 +60,7 @@ class _MyFavoritesState extends State<MyFavorites> {
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 5,
-          mainAxisSpacing: 5,
+          mainAxisSpacing: 15,
         ),
         itemBuilder: (context, index) {
           MyUser otherUser = friendList[index];
@@ -74,7 +74,7 @@ class _MyFavoritesState extends State<MyFavorites> {
                       builder: (context) => UserDetails(userId: otherUser.id)));
             },
             child: Container(
-                padding: const EdgeInsets.all(15),
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width / 30),
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: Colors.amberAccent,

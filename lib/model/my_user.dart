@@ -12,6 +12,7 @@ class MyUser {
   String? avatar;
   Gender genre = Gender.indefini;
   List? favoris;
+  Map<String, dynamic>? coordonnees;
 
   String get fullName {
     return "$prenom $nom";
@@ -23,7 +24,6 @@ class MyUser {
     email = "";
     nom = "";
     prenom = "";
-
   }
 
   // constructeur bdd
@@ -40,6 +40,8 @@ class MyUser {
     prenom = map["prenom"];
     String? provisoirePseudo = map["pseudo"];
     favoris = map["favoris"] ?? [];
+    coordonnees = map["coordonnees"] as Map<String, dynamic>?;
+
 
     if(provisoirePseudo == null){
       pseudo = "";
