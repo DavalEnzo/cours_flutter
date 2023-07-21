@@ -33,28 +33,11 @@
     ]
   },
   {
-    "featureType": "landscape.natural",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
     "featureType": "poi",
     "elementType": "labels.text.fill",
     "stylers": [
       {
         "color": "#d59563"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.attraction",
-    "stylers": [
-      {
-        "visibility": "off"
       }
     ]
   },
@@ -73,14 +56,6 @@
     "stylers": [
       {
         "color": "#6b9a76"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.place_of_worship",
-    "stylers": [
-      {
-        "visibility": "off"
       }
     ]
   },
@@ -144,22 +119,6 @@
     "stylers": [
       {
         "color": "#2f3948"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.line",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.station",
-    "stylers": [
-      {
-        "visibility": "off"
       }
     ]
   },

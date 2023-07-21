@@ -64,7 +64,7 @@ class _CarteGoogleState extends State<CarteGoogle> {
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
-  createMarkers() async {
+  Future<void> createMarkers() async {
     for (MyUser friend in friendList) {
       if (friend.coordonnees?["latitude"] != null) {
         Uint8List markerIcon = await readNetworkImage(friend.avatar ?? defaultImage);
@@ -104,9 +104,8 @@ class _CarteGoogleState extends State<CarteGoogle> {
           createMarkers();
         },
         onMapCreated: (GoogleMapController controller) async {
-          String newStyle = await DefaultAssetBundle.of(context)
-              .loadString('lib/map_style.json');
-          controller.setMapStyle(newStyle);
+          controller.setMapStyle("[]");
+          controller.setMapStyle(await rootBundle.loadString('lib/map_style.json'));
           completer.complete(controller);
         }
     );
