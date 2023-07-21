@@ -10,6 +10,7 @@ import 'package:cours_flutter/view/loading_view.dart';
 import 'package:cours_flutter/view/register_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 // ne pas oublier d'importer le package firebase_core pour initialiser le lien avec Firebase,
 // le package firebase_auth pour l'authentification et le package cloud_firestore pour la base de données
 import 'package:firebase_core/firebase_core.dart';
@@ -21,61 +22,43 @@ import 'controller/firestore_helper.dart';
 import 'firebase_options.dart';
 import 'global.dart';
 
-void fetchBackground(context) async {
-  // Perform your background task here
-  print("Background fetch executed");
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-
     options: DefaultFirebaseOptions.currentPlatform,
-
   );
   MyPermissionPhoto().init();
+  PermissionGps().init();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  Future<Position?> getUserCurrentLocation() async {
-    try {
-      PermissionGps().init();
-      var gpsEnabled = await Permission.location.serviceStatus.isEnabled;
-      if(gpsEnabled) {
-        var position = await Geolocator.getCurrentPosition();
-        return position;
-      }
-    } catch (e) {
-      print(e);
-    }
 
-    return await Geolocator.getCurrentPosition();
+  Future<Position?> getUserCurrentLocation() async {
+    if (await Permission.location.status.isGranted) {
+      var gpsEnabled = await Permission.location.serviceStatus.isEnabled;
+      if (me.id != "" && gpsEnabled) {
+        var position = await Geolocator.getCurrentPosition();
+        me.coordonnees = {
+          "latitude": position.latitude,
+          "longitude": position.longitude
+        };
+        Map<String, dynamic> map = {"coordonnees": me.coordonnees};
+        FirestoreHelper().updateUser(me.id, map);
+      }
+    }
   }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    getUserCurrentLocation();
-    Timer.periodic(const Duration(seconds: 10), (timer) async {
-      fetchBackground(context);
-      var gpsEnabled = await Permission.location.serviceStatus.isEnabled;
-      if(me.id != "" && !gpsEnabled) {
-        me.coordonnees = {
-          "latitude": me.coordonnees?["latitude"],
-          "longitude": me.coordonnees?["longitude"]
-        };
-        Map<String, dynamic> map = {
-          "coordonnees": me.coordonnees
-        };
-        FirestoreHelper().updateUser(me.id, map);
-      }
+    Timer.periodic(const Duration(seconds: 15), (timer) async {
+      getUserCurrentLocation();
     });
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-
         primarySwatch: Colors.blue,
       ),
       home: const MyLoading(),
