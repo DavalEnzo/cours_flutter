@@ -10,6 +10,7 @@ import 'dart:ui' as ui;
 import '../controller/firestore_helper.dart';
 import '../global.dart';
 import '../model/my_user.dart';
+import 'conversation_page.dart';
 
 class CarteGoogle extends StatefulWidget {
   Position location;
@@ -27,9 +28,11 @@ class _CarteGoogleState extends State<CarteGoogle> {
   List<MyUser> friendList = [];
   final Set<Marker> markers = {};
   bool loading = true;
+  Timer? _updateMarkersTimer;
 
   @override
   void initState() {
+    super.initState();
     for (String index in me.favoris!) {
       FirestoreHelper().getUser(index).then((value) {
         setState(() {
@@ -54,6 +57,17 @@ class _CarteGoogleState extends State<CarteGoogle> {
       loading = false;
     }
     );
+
+
+    _updateMarkersTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      createMarkers();
+    });
+  }
+
+  @override
+  void dispose() {
+    _updateMarkersTimer?.cancel();
+    super.dispose();
   }
 
   Future<Uint8List> readNetworkImage(String imageUrl) async {
@@ -74,9 +88,9 @@ class _CarteGoogleState extends State<CarteGoogle> {
             markerId: MarkerId(friend.id),
             position: LatLng(friend.coordonnees!["latitude"], friend.coordonnees!["longitude"]),
             icon: icon,
-            infoWindow: InfoWindow(title: friend.fullName, snippet: "Cliquez sur cette bulle pour voir le profil", onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => UserDetails(userId: friend.id)));
-            }),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ConversationPage(user: friend)));
+            },
           ));
         });
       }
