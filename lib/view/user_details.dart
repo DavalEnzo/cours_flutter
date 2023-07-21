@@ -81,12 +81,12 @@ class _UserDetailsState extends State<UserDetails> {
                   bottom: 0,
                   right: 0,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.blueAccent,
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.edit, color: Colors.white),
+                      icon: const Icon(Icons.edit, color: Colors.white),
                       onPressed: () {
                         // Add your edit profile picture logic here
                       },
@@ -96,7 +96,7 @@ class _UserDetailsState extends State<UserDetails> {
               ],
             ),
             const SizedBox(height: 20),
-            Text(userDetail.fullName,
+            Text(capitalize(userDetail.fullName),
                 style: const TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
@@ -140,7 +140,7 @@ class _UserDetailsState extends State<UserDetails> {
                       radius: 30,
                       backgroundImage: NetworkImage(friend.avatar ?? defaultImage),
                     ),
-                    title: Text(friend.fullName, style: const TextStyle(color: Colors.white)),
+                    title: Text(capitalize(friend.fullName), style: const TextStyle(color: Colors.white)),
                     subtitle: Text(friend.email, style: const TextStyle(color: Colors.white)),
                   ),
                 );
