@@ -45,7 +45,6 @@ dependencies:
   file_picker:
   font_awesome_flutter:
   lottie:
-  workmanager: ^0.5.1
   geocoding: ^2.1.0
 
 dev_dependencies:
