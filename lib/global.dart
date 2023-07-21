@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'dart:io';
@@ -52,4 +51,21 @@ MyPopupError(dynamic erreur, String typeErreur, String message, BuildContext con
         }
       }
   );
+}
+
+String capitalize(String sentence) {
+  if (sentence.isEmpty) {
+    return sentence;
+  }
+
+  final List<String> words = sentence.split(' ');
+
+  for (int i = 0; i < words.length; i++) {
+    final String word = words[i];
+    if (word.isNotEmpty) {
+      words[i] = word[0].toUpperCase() + word.substring(1);
+    }
+  }
+
+  return words.join(' ');
 }

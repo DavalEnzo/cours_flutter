@@ -17,6 +17,7 @@ class _MyFavoritesState extends State<MyFavorites> {
 
   @override
   void initState() {
+    super.initState();
     if (me.favoris!.isEmpty) {
       setState(() {
         loading = false;
@@ -102,7 +103,7 @@ class _MyFavoritesState extends State<MyFavorites> {
                   backgroundImage: NetworkImage(otherUser.avatar ?? defaultImage),
                 ),
                 const SizedBox(height: 15),
-                Text(otherUser.fullName),
+                Text(capitalize(otherUser.fullName)),
                 Text(otherUser.email),
               ],
             ),

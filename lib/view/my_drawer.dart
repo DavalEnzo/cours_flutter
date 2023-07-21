@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cours_flutter/controller/firestore_helper.dart';
 import 'package:file_picker/file_picker.dart';
@@ -22,23 +21,6 @@ class _MyDrawerState extends State<MyDrawer> {
   Uint8List? bytesImages;
 
   // fonction
-  String capitalize(String sentence) {
-    if (sentence.isEmpty) {
-      return sentence;
-    }
-
-    final List<String> words = sentence.split(' ');
-
-    for (int i = 0; i < words.length; i++) {
-      final String word = words[i];
-      if (word.isNotEmpty) {
-        words[i] = word[0].toUpperCase() + word.substring(1);
-      }
-    }
-
-    return words.join(' ');
-  }
-
   accesPhoto() async {
     FilePickerResult? resultat = await FilePicker.platform.pickFiles(
       type: FileType.image,

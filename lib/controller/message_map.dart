@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cours_flutter/global.dart';
 import 'package:flutter/material.dart';
 import 'package:cours_flutter/controller/firestore_helper.dart';
 import 'package:cours_flutter/model/my_user.dart';
@@ -42,7 +43,7 @@ class _MessageMapState extends State<MessageMap> {
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(user.avatar!),
                   ),
-                  title: Text(user.fullName),
+                  title: Text(capitalize(user.fullName)),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -57,6 +58,7 @@ class _MessageMapState extends State<MessageMap> {
           );
         },
       ),
+      backgroundColor: Colors.blueAccent,
       // ... your BottomNavigationBar code here ...
     );
   }
