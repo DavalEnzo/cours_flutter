@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cours_flutter/view/user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:cours_flutter/model/my_message.dart';
 import 'package:cours_flutter/model/my_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../global.dart';
 
 class ConversationPage extends StatefulWidget {
   final MyUser user;
@@ -27,14 +30,25 @@ class _ConversationPageState extends State<ConversationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(widget.user.avatar ?? ''),
+        title: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.65,
+          child: InkWell(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => UserDetails(userId: widget.user.id)));
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(widget.user.avatar ?? ''),
+                ),
+                const SizedBox(width: 15),
+                Text(capitalize(widget.user.fullName)),
+              ],
             ),
-            SizedBox(width: 8),
-            Text(widget.user.fullName),
-          ],
+          ),
         ),
         leading: BackButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -52,14 +66,24 @@ class _ConversationPageState extends State<ConversationPage> {
                   .snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Text('Something went wrong');
+                  return const Text('Quelque chose s\'est mal passé');
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text("Loading");
+                  return const Center(
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        backgroundColor: Colors.deepOrange,
+                        strokeWidth: 7,
+                      ),
+                    ),
+                  );
                 }
 
-                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
                   _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
                 });
 
@@ -74,8 +98,8 @@ class _ConversationPageState extends State<ConversationPage> {
                     return Container(
                       alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         decoration: BoxDecoration(
                           color: isSender ? Colors.blue[200] : Colors.grey[200],
                           borderRadius: BorderRadius.circular(20),
@@ -83,7 +107,7 @@ class _ConversationPageState extends State<ConversationPage> {
                         child: Column(
                           crossAxisAlignment: isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(message.message, style: TextStyle(fontSize: 16, color: Colors.black)),
+                            Text(message.message, style: const TextStyle(fontSize: 16, color: Colors.black)),
                           ],
                         ),
                       ),
@@ -94,14 +118,14 @@ class _ConversationPageState extends State<ConversationPage> {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _messageController,
                     decoration: InputDecoration(
-                      labelText: 'Write a message...',
+                      labelText: 'Message',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
@@ -109,7 +133,7 @@ class _ConversationPageState extends State<ConversationPage> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: () {
                     if (_messageController.text.isNotEmpty) {
                       // Send the message to Firebase
@@ -131,6 +155,7 @@ class _ConversationPageState extends State<ConversationPage> {
           ),
         ],
       ),
+      backgroundColor: Colors.white,
     );
   }
 }

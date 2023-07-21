@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cours_flutter/controller/firestore_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 
 import '../global.dart';
@@ -61,7 +60,7 @@ class _AllUsersState extends State<AllUsers> {
                           ),
                         ),
                       ),
-                      title: Text(autreUtilisateur.fullName),
+                      title: Text(capitalize(autreUtilisateur.fullName)),
                       subtitle: Text(autreUtilisateur.email),
                       trailing: IconButton(
                         icon: Icon(
