@@ -44,7 +44,7 @@ class _UserDetailsState extends State<UserDetails> {
     });
   }
 
-  Future<String?> getStreetFromCoordinates(double latitude, double longitude) async {
+  getStreetFromCoordinates(double latitude, double longitude) async {
     if (userDetail.coordonnees == null) return "";
     List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
     Placemark rue = placemarks[0];
@@ -55,9 +55,10 @@ class _UserDetailsState extends State<UserDetails> {
 
   @override
   Widget build(BuildContext context) {
+    if(userDetail.coordonnees != null) getStreetFromCoordinates(userDetail.coordonnees?["latitude"], userDetail.coordonnees?["longitude"]);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Détails de l'utilisateur"),
+        title: const Text("Détails de l'utilisateur"),
         bottom: PreferredSize(
             preferredSize: Size.zero,
             child: Text(adresse, style: const TextStyle(fontSize: 10, color: Colors.white))),
