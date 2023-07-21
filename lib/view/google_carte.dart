@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:cours_flutter/view/user_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'dart:ui' as ui;
 
 import '../controller/firestore_helper.dart';
@@ -25,6 +26,8 @@ class _CarteGoogleState extends State<CarteGoogle> {
   late CameraPosition camera;
   List<MyUser> friendList = [];
   final Set<Marker> markers = {};
+  bool loading = true;
+
   @override
   void initState() {
     for (String index in me.favoris!) {
@@ -44,50 +47,68 @@ class _CarteGoogleState extends State<CarteGoogle> {
         markerId: MarkerId(me.id),
         position: LatLng(widget.location.latitude, widget.location.longitude),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        infoWindow: InfoWindow(title: me.fullName),
+        infoWindow: InfoWindow(title: "Moi", snippet: "Je suis ici", onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => UserDetails(userId: me.id)));
+        }),
       ));
-    });
+      loading = false;
+    }
+    );
   }
 
-  Future<BitmapDescriptor> getMarkerIconFromUrl(String imageUrl) async {
-    final response = await http.get(Uri.parse(imageUrl));
-    if (response.statusCode == 200) {
-      final bytes = response.bodyBytes;
-      return BitmapDescriptor.fromBytes(bytes, size: const Size(20, 20));
-    } else {
-      // If there is an error or the image cannot be loaded, return a default icon.
-      return BitmapDescriptor.defaultMarker;
+  Future<Uint8List> readNetworkImage(String imageUrl) async {
+    final ByteData data =
+    await NetworkAssetBundle(Uri.parse(imageUrl)).load(imageUrl);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: camera.zoom.toInt() + 90);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+  }
+
+  createMarkers() async {
+    for (MyUser friend in friendList) {
+      if (friend.coordonnees?["latitude"] != null) {
+        Uint8List markerIcon = await readNetworkImage(friend.avatar ?? defaultImage);
+        BitmapDescriptor icon = BitmapDescriptor.fromBytes(markerIcon);
+        setState(() {
+          markers.add(Marker(
+            markerId: MarkerId(friend.id),
+            position: LatLng(friend.coordonnees!["latitude"], friend.coordonnees!["longitude"]),
+            icon: icon,
+            infoWindow: InfoWindow(title: friend.fullName, snippet: "Cliquez sur cette bulle pour voir le profil", onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => UserDetails(userId: friend.id)));
+            }),
+          ));
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return GoogleMap(
         initialCameraPosition: camera,
         myLocationButtonEnabled: true,
         markers: markers,
         buildingsEnabled: true,
         myLocationEnabled: true,
-        onMapCreated: (control) async {
+        onCameraIdle: () {
+          createMarkers();
+        },
+        onCameraMove: (position) {
+          setState(() {
+            camera = position;
+          });
+          createMarkers();
+        },
+        onMapCreated: (GoogleMapController controller) async {
           String newStyle = await DefaultAssetBundle.of(context)
               .loadString('lib/map_style.json');
-          control.setMapStyle(newStyle);
-          for (MyUser friend in friendList) {
-            if (friend.coordonnees?["latitude"] != null) {
-              String? imageUrl = friend.avatar; // Replace with the actual field in your database that holds the image URL.
-              BitmapDescriptor icon = await getMarkerIconFromUrl(imageUrl!);
-              setState(() {
-                markers.add(Marker(
-                  markerId: MarkerId(friend.id),
-                  position: LatLng(friend.coordonnees!["latitude"], friend.coordonnees!["longitude"]),
-                  icon: icon,
-                  infoWindow: InfoWindow(title: friend.fullName),
-                ));
-              });
-            }
-          }
-
-          completer.complete(control);
-        });
+          controller.setMapStyle(newStyle);
+          completer.complete(controller);
+        }
+    );
   }
 }
